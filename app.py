@@ -1,25 +1,31 @@
 import streamlit as st
+from streamlit.errors import StreamlitAPIException
 import requests
 import json
 
 """
-Credit‑Score API App (sem perfis de demonstração)
-================================================
-Interface Streamlit minimalista que envia **todas** as features obrigatórias
-para um endpoint REST de *credit‑scoring*.
+Credit‑Score API App (sem perfis)
+================================
+Frontend minimalista para um modelo de *credit‑scoring* exposto via API.
 
-A estrutura segue a orientação do professor (API‑first) e substitui
-a versão da colega, removendo completamente os perfis predefinidos para
-que cada usuário preencha seus próprios dados.
+Correção:
+---------
+• Envolve `st.set_page_config` em *try/except* para evitar o erro de
+  "page config called twice" quando o script é usado dentro de um
+  multipage ou recarregado em hot‑reload.
 """
 
-# –– Configuração da página
-st.set_page_config(
-    page_title="Quantum Finance - Credit Score Predictor - MLOps - FIAP 10DTSR",
-    page_icon="💳",
-    layout="wide",
-    initial_sidebar_state="auto",
-)
+# –– Configuração da página (robusta contra múltiplas chamadas)
+try:
+    st.set_page_config(
+        page_title="Quantum Finance - Credit Score Predictor - MLOps - FIAP 10DTSR",
+        page_icon="💳",
+        layout="wide",
+        initial_sidebar_state="auto",
+    )
+except StreamlitAPIException:
+    # Já foi definida em outro módulo/página.
+    pass
 
 ###########################
 # Função de requisição API
