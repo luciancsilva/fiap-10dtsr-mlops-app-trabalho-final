@@ -8,24 +8,38 @@ Credit‑Score API App (sem perfis)
 ================================
 Frontend minimalista para um modelo de *credit‑scoring* exposto via API.
 
-Correção:
----------
-• Envolve `st.set_page_config` em *try/except* para evitar o erro de
-  "page config called twice" quando o script é usado dentro de um
-  multipage ou recarregado em hot‑reload.
+Novidades nesta versão
+----------------------
+1. **Chaves em `st.secrets` flexíveis** – aceita `API_ENDPOINT`/`API-ENDPOINT` e
+   `API_KEY`/`API-KEY`, evitando `KeyError` quando o usuário usa hífen no
+   *secrets.toml* ou no painel do Streamlit Cloud.
+2. **`set_page_config` garantido** – permanece no topo do script e protegido
+   por `try/except`, eliminando o erro de "can only be called once".
 """
 
 # –– Configuração da página (robusta contra múltiplas chamadas)
 try:
     st.set_page_config(
-        page_title="Quantum Finance - Credit Score Predictor - MLOps - FIAP 10DTSR",
+        page_title="Credit Score App (API)",
         page_icon="💳",
         layout="wide",
         initial_sidebar_state="auto",
     )
 except StreamlitAPIException:
-    # Já foi definida em outro módulo/página.
-    pass
+    pass  # Já definida
+
+###########################
+# Helper para ler segredos
+###########################
+
+def _get_secret(*keys, default=None):
+    """Tenta retornar a primeira chave existente em st.secrets dentre `keys`."""
+    for key in keys:
+        if key in st.secrets:
+            return st.secrets[key]
+    if default is not None:
+        return default
+    raise KeyError(f"Nenhuma das chaves {keys} encontrada em st.secrets")
 
 ###########################
 # Função de requisição API
@@ -33,10 +47,11 @@ except StreamlitAPIException:
 
 def get_prediction(payload: dict):
     """POSTa o payload e devolve (prediction, proba) ou (None, None) em erro."""
-    endpoint = st.secrets["API_ENDPOINT"]
+    endpoint = _get_secret("API_ENDPOINT", "API-ENDPOINT")
+    api_key = _get_secret("API_KEY", "API-KEY")
     headers = {
         "Content-Type": "application/json",
-        "x-api-key": st.secrets["API_KEY"],
+        "x-api-key": api_key,
     }
     try:
         resp = requests.post(endpoint, headers=headers, data=json.dumps(payload), timeout=10)
@@ -116,11 +131,11 @@ if run_button:
         st.stop()
 
     if prediction == 1:
-        st.success("💚 **SCORE: BOM** – risco baixo de inadimplência.")
+        st.success("💚 **SCORE: GOOD** – risco baixo de inadimplência.")
     elif prediction == 0:
         st.warning("🟠 **SCORE: REGULAR** – risco moderado.")
     elif prediction == -1:
-        st.error("❤️‍🔥 **SCORE: RUIM** – alto risco de inadimplência.")
+        st.error("❤️‍🔥 **SCORE: POOR** – alto risco de inadimplência.")
     else:
         st.info(f"Resultado bruto do modelo: {prediction}")
 
