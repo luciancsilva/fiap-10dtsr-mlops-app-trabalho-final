@@ -9,7 +9,7 @@ Quantum Finance - Credit Score Analysis
 Sistema de análise de score de crédito utilizando modelo de Machine Learning via API.
 
 Projeto Final - Quantum Finance
-FIAP - MBA em DATA SCIENCE & ARTIFICIAL INTELLIGENCE
+FIAP - MBA em Data Science & AI
 Disciplina: MLOps | Turma: 10DTSR
 
 Equipe:
@@ -21,7 +21,7 @@ Equipe:
 # –– Configuração da página (robusta contra múltiplas chamadas)
 try:
     st.set_page_config(
-        page_title="Quantum Finance - Credit Score",
+        page_title="Quantum Finance - Credit Score Classifier",
         page_icon="🏦",
         layout="wide",
         initial_sidebar_state="expanded",
@@ -99,8 +99,7 @@ with st.sidebar:
     
     st.markdown("---")
     st.markdown("**🎓 Projeto Final**")
-    st.markdown("**FIAP - MBA em DATA SCIENCE**")
-    st.markdown("**& ARTIFICIAL INTELLIGENCE**")
+    st.markdown("**FIAP - MBA em Data Science & AI **")
     st.markdown("**Disciplina:** MLOps")
     st.markdown("**Turma:** 10DTSR")
     st.markdown("")
@@ -139,7 +138,7 @@ with col1:
     
 with col2:
     Annual_Income = st.number_input(
-        "💰 Renda Anual (R$)", 
+        "💰 Renda Anual (USD)", 
         min_value=0.0, 
         max_value=1_000_000.0, 
         value=50000.0, 
