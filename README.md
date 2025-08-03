@@ -1,45 +1,23 @@
-# FIAP - MLOps - Streamlit App - Score de Crédito
+# FIAP - MLOps - API de Score de Crédito
 
-Este repositório contém a interface web do projeto de **score de crédito**, desenvolvido como parte do trabalho final da disciplina de MLOps do MBA da FIAP.
+Este repositório contém a API que serve como backend do projeto de **score de crédito** desenvolvido como trabalho final da disciplina de MLOps no MBA da FIAP.
 
-A aplicação foi construída com [Streamlit](https://streamlit.io/) e conecta-se a uma API hospedada na AWS, que realiza a predição com base no modelo de Machine Learning treinado.
-
----
-
-## 💻 Visão Geral
-
-A interface coleta informações do usuário como:
-
-- Número de cartões de crédito
-- Pagamentos atrasados
-- Utilização do limite
-- Histórico de crédito
-- Tipos de empréstimo em aberto
-- Pagamento mínimo
-- Entre outros
-
-Com esses dados, o app envia uma requisição à **API de predição**, que responde com um score classificado como:
-
-- `Ruim`
-- `Médio`
-- `Bom`
+A API está empacotada em um container Docker e implantada na **AWS Lambda** via **ECR**, sendo acessada por meio do **API Gateway**.
 
 ---
 
-## 🚀 Como executar o app localmente
+## 📦 Funcionalidade
 
-### ✅ Requisitos
+A API expõe um endpoint `/prediction` que recebe um payload JSON com os dados do cliente e retorna:
 
-- Python 3.10+
-- [Streamlit](https://docs.streamlit.io/)
-- API de predição rodando (local ou na nuvem)
+* A **classe prevista** (`"Bom"`, `"Neutro"` ou `"Ruim"`)
+* O **rótulo numérico** correspondente (`"1"`, `"0"` ou `"-1"`)
 
-### 🔧 Instalação
+Exemplo de resposta:
 
-Clone o repositório:
-
-```bash
-git clone https://github.com/luciancsilva/fiap-10dtsr-mlops-app-trabalho-final.git
-cd fiap-10dtsr-mlops-app-trabalho-final
-pip install -r requirements.txt
-
+```json
+{
+  "prediction": 1,
+  "classe": "Bom"
+}
+```
